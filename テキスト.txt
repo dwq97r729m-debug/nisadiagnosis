@@ -1,0 +1,108 @@
+index.html
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>NISA開設方法診断</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f7f7f7;
+      padding: 30px;
+    }
+    .question {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background: #ffd6e8;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #ffb6d5;
+    }
+  </style>
+</head>
+<body>
+
+<h1>あなたに合うNISA開設方法診断</h1>
+<div id="quiz" class="question"></div>
+
+<script>
+  const questions = [
+    {
+      text: "Q1. お金のことを相談したい？",
+      answers: [
+        { text: "対面でしっかり相談したい", type: "branch" },
+        { text: "アプリやチャットで相談したい", type: "app" },
+        { text: "正直よく分からない", type: "beginner" }
+      ]
+    },
+    {
+      text: "Q2. 口座開設にかけられる時間は？",
+      answers: [
+        { text: "時間がかかっても安心が大事", type: "branch" },
+        { text: "30分くらいなら大丈夫", type: "app" },
+        { text: "できるだけ迷いたくない", type: "beginner" }
+      ]
+    },
+    {
+      text: "Q3. 投資の知識は？",
+      answers: [
+        { text: "説明を聞きながら進めたい", type: "branch" },
+        { text: "ある程度は分かる", type: "app" },
+        { text: "ほぼゼロ", type: "beginner" }
+      ]
+    }
+  ];
+
+  let current = 0;
+  let score = { branch: 0, app: 0, beginner: 0 };
+  const quiz = document.getElementById("quiz");
+
+  function showQuestion() {
+    const q = questions[current];
+    quiz.innerHTML = `<h2>${q.text}</h2>`;
+    q.answers.forEach(a => {
+      const btn = document.createElement("button");
+      btn.textContent = a.text;
+      btn.onclick = () => {
+        score[a.type]++;
+        current++;
+        current < questions.length ? showQuestion() : showResult();
+      };
+      quiz.appendChild(btn);
+    });
+  }
+
+  function showResult() {
+    const result = Object.keys(score).reduce((a, b) =>
+      score[a] > score[b] ? a : b
+    );
+
+    let message = "";
+    if (result === "branch") {
+      message = "①【支店開設型】\n\n対面で相談しながら、安心してNISAを始めたい人におすすめです。";
+    } else if (result === "app") {
+      message = "②【銀行アプリ内開設型】\n\nスマホで手軽に始めたい人に向いています。";
+    } else {
+      message = "③【超初心者タイプ】\n\n何から始めればいいか分からない人向け。サポート付きで安心です。";
+    }
+
+    quiz.innerHTML = `<h2>診断結果</h2><p>${message.replace(/\n/g, "<br>")}</p>`;
+  }
+
+  showQuestion();
+</script>
+
+</body>
+</html>
